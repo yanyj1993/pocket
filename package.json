@@ -1,0 +1,35 @@
+{
+  "name": "pocket",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "start": "node splitFile && gulp minify ",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yanyj1993/pocket.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yanyj1993/pocket/issues"
+  },
+  "homepage": "https://github.com/yanyj1993/pocket#readme",
+  "devDependencies": {
+    "benchmark": "^2.1.4",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-filter": "^5.1.0",
+    "gulp-jsbeautifier": "^2.1.2",
+    "gulp-order": "^1.1.1",
+    "gulp-prettier": "^2.0.0",
+    "gulp-replace": "^0.6.1",
+    "gulp-uglify": "^3.0.0"
+  }
+}
