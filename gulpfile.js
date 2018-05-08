@@ -19,7 +19,7 @@ gulp.task('clean',function(){
 
 var fileArray = [
     "src/pocket/pocket.header",
-    "src/pocket_*/*.js",
+    "src/pocket-*/*.js",
     "src/pocket/pocket.tail",
 ];
 
@@ -28,8 +28,8 @@ gulp.task("contact",function(){
     // 把1.js和2.js合并为main.js，输出到dest/js目录下
     gulp.src(fileArray)
         .pipe(order(fileArray,{ base: './' }))
-        .pipe(filter(['src/*/*','!src/pocket_*/*-test.js']))
-        .pipe(replace('var pocket = require(\'../pocket\');', ''))
+        .pipe(filter(['src/*/*','!src/pocket-*/*-test.js']))
+        .pipe(replace(/var pocket = require\('([^']*)'\);/, ''))
         .pipe(replace('module.exports = pocket;', ''))
         .pipe(concat('pocket.js')).pipe(prettify({
         indent_size: 4,
@@ -41,8 +41,8 @@ gulp.task("uglify",function(){
     // 把1.js和2.js合并压缩为main.js，输出到dest/js目录下
     gulp.src(fileArray)
         .pipe(order(fileArray,{ base: './' }))
-        .pipe(filter(['src/*/*','!src/pocket_*/*-test.js']))
-        .pipe(replace('var pocket = require(\'../pocket\');', ''))
+        .pipe(filter(['src/*/*','!src/pocket-*/*-test.js']))
+        .pipe(replace(/var pocket = require\('([^']*)'\);/, ''))
         .pipe(replace('module.exports = pocket;', ''))
         .pipe(concat('pocket.min.js')).pipe(uglify()).pipe(gulp.dest('./dist'));
 });

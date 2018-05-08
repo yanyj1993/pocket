@@ -62,6 +62,10 @@
     pocket.isDate = function(arg) {
         return pocket.is(arg, 'Date')
     };
+    // RegExp
+    pocket.isRegExp = function(arg) {
+        return pocket.is(arg, 'RegExp')
+    };
 
     // 安全的获取对象属性
     pocket.getValue = function(obj, args) {
@@ -74,6 +78,23 @@
         }
 
         return next;
+    };
+
+
+
+    // add by yanyj 20180507 end
+    // add by yanyj 20180507 start
+    // String
+
+
+    // padStart
+    pocket.padStart = function(str, length, padStr) {
+        if (String.prototype.padStart) {
+            return String.prototype.padStart.call(str, length, padStr);
+        }
+
+        // 自身实现
+        return padStr.repeat(length).slice(0, length - str.length) + str;
     };
 
 

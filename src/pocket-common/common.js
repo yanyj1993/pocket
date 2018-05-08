@@ -24,6 +24,8 @@ pocket.isNull = function(arg) { return pocket.is(arg, 'Null') };
 pocket.isFunction = function(arg) { return pocket.is(arg, 'Function') };
 // Date
 pocket.isDate = function(arg) { return pocket.is(arg, 'Date') };
+// RegExp
+pocket.isRegExp = function(arg) { return pocket.is(arg, 'RegExp') };
 
 // 安全的获取对象属性
 pocket.getValue = function (obj, args) {
