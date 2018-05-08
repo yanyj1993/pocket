@@ -17,13 +17,14 @@
     }
 }(this, function() {
     var pocket = {};
+    var root = this;
 
     // add by yanyj 20180507 start
     // common 方法
 
     // 判断 参数类型
     pocket.is = function(arg, type) {
-        return toString.call(arg) === '[object ' + type + ']';
+        return Object.prototype.toString.call(arg) === '[object ' + type + ']';
     };
 
     // Number
@@ -88,43 +89,87 @@
 
 
     // 简单实现Map
-    pocket.Map = function() {
+    pocket.Map = root.Map || function(iterable) {
         // 如果已经实现了Map, 则返回全局变量下的Map
-        // if(root.Map) return new root.Map(args);
 
         var _data = {};
+        var _size = 0;
+        if (pocket.isArray(iterable)) {
+            for (var i = 0, length = iterable.length; i < length; i++) {
+                if (pocket.isArray(iterable[i]) && iterable[i].length > 1) {
+                    _data[iterable[i][0]] = iterable[i][1];
+                    _size++;
+                }
+            }
+        }
 
-        return {
-            size: 0,
 
-            clear: function() {
-                _data = {};
-                this.size = 0;
-            },
-            // 删除
-            'delete': function(key) {
-                if (!_data.hasOwnProperty(key)) return false;
-                delete _data[key];
-                this.size--;
-                return true;
-            },
-            // 添加
-            set: function(key, value) {
-                _data[key] = value;
-                this.size++;
-            },
+        this.size = _size;
 
-            entries: function() {
+        this.clear = function() {
+            _data = {};
+            this.size = 0;
+        };
+        // 删除
+        this['delete'] = function(key) {
+            if (!_data.hasOwnProperty(key)) return false;
+            delete _data[key];
+            this.size--;
+            return true;
+        };
+        // 添加
+        this.set = function(key, value) {
+            if (!_data.hasOwnProperty(key)) this.size++;
+            _data[key] = value;
+
+        };
+
+        this.entries = function() {
+            var keys = pocket.keys(_data);
+            var _entries = [];
+            var key;
+            for (var i = 0, length = keys.length; i < length; i++) {
+                key = keys[i];
+                _entries.push([key, _data[key]])
+            }
+
+            return _entries;
+        };
+
+        this.forEach = function(callback) {
+            if (pocket.isFunction(callback)) {
                 var keys = pocket.keys(_data);
-                var _entries = [];
                 var key;
                 for (var i = 0, length = keys.length; i < length; i++) {
                     key = keys[i];
-                    _entries.push([key, _data[key]])
+                    callback(_data[key], key, this);
                 }
-
-                return _entries;
             }
+
+        };
+
+        this.get = function(key) {
+            return _data[key];
+        };
+
+        this.has = function(key) {
+            return _data.hasOwnProperty(key);
+        };
+
+        this.keys = function() {
+            return pocket.keys(_data);
+        };
+
+        this.values = function() {
+            var keys = pocket.keys(_data);
+            var _values = [];
+            var key;
+            for (var i = 0, length = keys.length; i < length; i++) {
+                key = keys[i];
+                _values.push(_data[key])
+            }
+
+            return _values;
         }
 
     };

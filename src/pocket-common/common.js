@@ -3,7 +3,7 @@
 var pocket = require('../pocket');
 // 判断 参数类型
 pocket.is = function (arg, type) {
-    return toString.call(arg) === '[object ' + type + ']';
+    return Object.prototype.toString.call(arg) === '[object ' + type + ']';
 };
 
 // Number
