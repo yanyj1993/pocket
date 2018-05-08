@@ -17,6 +17,7 @@
     }
 }(this, function () {
     var pocket = {};
+    var root = this;
 //split
     return pocket;
 

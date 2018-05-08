@@ -83,6 +83,94 @@
 
 
     // add by yanyj 20180507 end
+    // add by yanyj 20180508 start
+    // Map
+
+
+    // 简单实现Map
+    pocket.Map = function() {
+        // 如果已经实现了Map, 则返回全局变量下的Map
+        // if(root.Map) return new root.Map(args);
+
+        var _data = {};
+
+        return {
+            size: 0,
+
+            clear: function() {
+                _data = {};
+                this.size = 0;
+            },
+            // 删除
+            'delete': function(key) {
+                if (!_data.hasOwnProperty(key)) return false;
+                delete _data[key];
+                this.size--;
+                return true;
+            },
+            // 添加
+            set: function(key, value) {
+                _data[key] = value;
+                this.size++;
+            },
+
+            entries: function() {
+                var keys = pocket.keys(_data);
+                var _entries = [];
+                var key;
+                for (var i = 0, length = keys.length; i < length; i++) {
+                    key = keys[i];
+                    _entries.push([key, _data[key]])
+                }
+
+                return _entries;
+            }
+        }
+
+    };
+
+
+    // add by yanyj 20180508 end
+    // add by yanyj 20180508 start
+    // object.js
+
+
+    pocket.keys = Object.keys || (function() {
+        var hasOwnProperty = Object.prototype.hasOwnProperty,
+            hasDontEnumBug = !({
+                toString: null
+            }).propertyIsEnumerable('toString'),
+            dontEnums = [
+                'toString',
+                'toLocaleString',
+                'valueOf',
+                'hasOwnProperty',
+                'isPrototypeOf',
+                'propertyIsEnumerable',
+                'constructor'
+            ],
+            dontEnumsLength = dontEnums.length;
+
+        return function(obj) {
+            if (typeof obj !== 'object' && typeof obj !== 'function' || obj === null) throw new TypeError('Object.keys called on non-object');
+
+            var result = [];
+
+            for (var prop in obj) {
+                if (hasOwnProperty.call(obj, prop)) result.push(prop);
+            }
+
+            if (hasDontEnumBug) {
+                for (var i = 0; i < dontEnumsLength; i++) {
+                    if (hasOwnProperty.call(obj, dontEnums[i])) result.push(dontEnums[i]);
+                }
+            }
+            return result;
+        }
+    })()
+
+
+    // add by yanyj 20180508 end
     // add by yanyj 20180507 start
     // String
 
@@ -95,6 +183,22 @@
 
         // 自身实现
         return padStr.repeat(length).slice(0, length - str.length) + str;
+    };
+
+    // padEnd
+    pocket.padEnd = function(str, length, padStr) {
+        if (String.prototype.padEnd) {
+            return String.prototype.padEnd.call(str, length, padStr);
+        }
+
+        // 自身实现
+        return str + padStr.repeat(length).slice(0, length - str.length);
+    };
+
+    // replaceAll
+    pocket.replaceAll = function(str, regStr, replaceStr) {
+        var regExp = pocket.isRegExp(regStr) ? regStr : new RegExp(regStr, 'g');
+        return str.replace(regExp, replaceStr);
     };
 
 
