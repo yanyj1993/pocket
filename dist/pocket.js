@@ -19,71 +19,27 @@
     var pocket = {};
     var root = this;
 
-    // add by yanyj 20180507 start
-    // common 方法
+    // add by yanyj 20180508 start
+    // array.js
 
-    // 判断 参数类型
-    pocket.is = function(arg, type) {
-        return Object.prototype.toString.call(arg) === '[object ' + type + ']';
-    };
 
-    // Number
-    pocket.isNumber = function(arg) {
-        return pocket.is(arg, 'Number')
-    };
-    // string
-    pocket.isString = function(arg) {
-        return pocket.is(arg, 'String')
-    };
-    // Object
-    pocket.isObject = function(arg) {
-        return pocket.is(arg, 'Object')
-    };
-    // Array
-    pocket.isArray = function(arg) {
-        return pocket.is(arg, 'Array')
-    };
-    // Boolean
-    pocket.isBoolean = function(arg) {
-        return pocket.is(arg, 'Boolean')
-    };
-    // Undefined
-    pocket.isUndefined = function(arg) {
-        return pocket.is(arg, 'Undefined')
-    };
-    // Null
-    pocket.isNull = function(arg) {
-        return pocket.is(arg, 'Null')
-    };
-    // Function
-    pocket.isFunction = function(arg) {
-        return pocket.is(arg, 'Function')
-    };
-    // Date
-    pocket.isDate = function(arg) {
-        return pocket.is(arg, 'Date')
-    };
-    // RegExp
-    pocket.isRegExp = function(arg) {
-        return pocket.is(arg, 'RegExp')
-    };
+    pocket.forEach = function(array, callback) {
+        if (pocket.isArray(array) && pocket.isFunction(callback)) {
+            if (Array.prototype.forEach) {
+                return Array.prototype.forEach.call(array, callback);
+            }
 
-    // 安全的获取对象属性
-    pocket.getValue = function(obj, args) {
-        var _args = pocket.isArray(args) ? args : args.split('.');
-        var next = obj;
-        for (var i = 0; i < _args.length; i++) {
-            next = next[_args[i]];
-            if (pocket.isUndefined(next)) return void 0;
-            if (pocket.isNull(next) && i !== (_args.length - 1)) return void 0;
+            for (var i = 0, length = array.length; i < length; i++) {
+                callback(array[i], i, array);
+            }
+
+            return void 0;
         }
 
-        return next;
     };
 
 
-
-    // add by yanyj 20180507 end
+    // add by yanyj 20180508 end
     // add by yanyj 20180508 start
     // Map
 
@@ -176,6 +132,189 @@
 
 
     // add by yanyj 20180508 end
+    // add by yanyj 20180508 start
+    // Map
+
+
+    pocket.Set = function(iterable) {
+
+        var _data = [];
+
+        var hasNaN = false;
+        var NaNIndex = -1;
+        var _iterable = iterable;
+        if (pocket.isString(iterable)) {
+            _iterable = iterable.split('');
+        }
+
+        if (pocket.isArray(_iterable)) {
+            pocket.forEach(_iterable, function(value) {
+                if (pocket.isNaN(value)) {
+                    if (!hasNaN) {
+                        hasNaN = true;
+                        NaNIndex = _data.length;
+                        _data.push(value);
+                    }
+                } else if (_data.indexOf(value) === -1) {
+                    _data.push(value);
+                }
+
+            })
+        }
+
+
+        this.size = _data.length;
+
+        this.add = function(value) {
+            if (pocket.isNaN(value)) {
+                if (!hasNaN) {
+                    hasNaN = true;
+                    NaNIndex = _data.length;
+                    _data.push(value);
+                    this.size++;
+                }
+            } else if (_data.indexOf(value) === -1) {
+                _data.push(value);
+                this.size++;
+            }
+
+
+
+            return this;
+        };
+
+        this.clear = function() {
+            this._data = [];
+            this.size = 0;
+            this.hasNaN = false;
+            this.NaNIndex = -1;
+        };
+
+        this.delete = function(value) {
+            if (pocket.isNaN(value) && NaNIndex !== -1) {
+                _data.splice(NaNIndex, 1);
+                this.hasNaN = false;
+                this.NaNIndex = -1;
+                this.size--;
+
+                return true;
+            }
+            var index = _data.indexOf(value);
+            if (index !== -1) {
+                _data.splice(index, 1);
+                this.size--;
+
+                return true;
+            }
+
+            return false;
+        };
+
+        this.entries = function() {
+            var _entries = [];
+
+            for (var i = 0, length = _data.length; i < length; i++) {
+                _entries.push([_data[i], _data[i]]);
+            }
+
+            return _entries;
+        };
+
+        this.forEach = function(callback) {
+            if (pocket.isFunction(callback)) {
+                for (var i = 0, length = _data.length; i < length; i++) {
+                    callback(_data[i], _data[i], this);
+                }
+            }
+
+        };
+
+        this.has = function(value) {
+            if (pocket.isNaN(value)) {
+                return hasNaN;
+            }
+
+            return _data.indexOf(value) !== -1;
+        };
+
+        this.keys = this.values = function() {
+            return _data;
+        }
+
+    };
+
+
+
+    // add by yanyj 20180508 end
+    // add by yanyj 20180507 start
+    // common 方法
+
+    // 判断 参数类型
+    pocket.is = function(arg, type) {
+        return Object.prototype.toString.call(arg) === '[object ' + type + ']';
+    };
+
+    // Number
+    pocket.isNumber = function(arg) {
+        return pocket.is(arg, 'Number')
+    };
+    // NaN
+    pocket.isNaN = function(arg) {
+        return pocket.is(arg, 'Number') && isNaN(arg)
+    };
+    // string
+    pocket.isString = function(arg) {
+        return pocket.is(arg, 'String')
+    };
+    // Object
+    pocket.isObject = function(arg) {
+        return pocket.is(arg, 'Object')
+    };
+    // Array
+    pocket.isArray = function(arg) {
+        return pocket.is(arg, 'Array')
+    };
+    // Boolean
+    pocket.isBoolean = function(arg) {
+        return pocket.is(arg, 'Boolean')
+    };
+    // Undefined
+    pocket.isUndefined = function(arg) {
+        return pocket.is(arg, 'Undefined')
+    };
+    // Null
+    pocket.isNull = function(arg) {
+        return pocket.is(arg, 'Null')
+    };
+    // Function
+    pocket.isFunction = function(arg) {
+        return pocket.is(arg, 'Function')
+    };
+    // Date
+    pocket.isDate = function(arg) {
+        return pocket.is(arg, 'Date')
+    };
+    // RegExp
+    pocket.isRegExp = function(arg) {
+        return pocket.is(arg, 'RegExp')
+    };
+
+    // 安全的获取对象属性
+    pocket.getValue = function(obj, args) {
+        var _args = pocket.isArray(args) ? args : args.split('.');
+        var next = obj;
+        for (var i = 0; i < _args.length; i++) {
+            next = next[_args[i]];
+            if (pocket.isUndefined(next)) return void 0;
+            if (pocket.isNull(next) && i !== (_args.length - 1)) return void 0;
+        }
+
+        return next;
+    };
+
+
+
+    // add by yanyj 20180507 end
     // add by yanyj 20180508 start
     // object.js
 

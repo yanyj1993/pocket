@@ -8,6 +8,8 @@ pocket.is = function (arg, type) {
 
 // Number
 pocket.isNumber = function(arg) { return pocket.is(arg, 'Number') };
+// NaN
+pocket.isNaN = function(arg) { return pocket.is(arg, 'Number') && isNaN(arg)  };
 // string
 pocket.isString = function(arg) { return pocket.is(arg, 'String') };
 // Object
