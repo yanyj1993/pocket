@@ -28,6 +28,10 @@ pocket.replaceAll = function(str, regStr, replaceStr) {
     return str.replace(regExp, replaceStr);
 };
 
+pocket.getUUID = function() {
+    return new Date().getTime().toString(16);
+};
+
 module.exports = pocket;
 
 // add by yanyj 20180507 end

@@ -52,7 +52,7 @@ gulp.task('minify', ['clean', 'contact', 'uglify']);
 
 
 gulp.task('watch', function(){
-    gulp.watch('./src/lib_*/*.js', ['minify']);
+    gulp.watch('./src/pocket-*/*.js', ['minify']);
 });
 
 //压缩

@@ -2,7 +2,7 @@
 // Map
 var pocket = require('../../dist/pocket');
 
-pocket.Set = function (iterable) {
+pocket.Set = root.Set || function (iterable) {
 
     var _data = [];
 

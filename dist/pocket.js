@@ -136,7 +136,7 @@
     // Map
 
 
-    pocket.Set = function(iterable) {
+    pocket.Set = root.Set || function(iterable) {
 
         var _data = [];
 
@@ -299,22 +299,35 @@
         return pocket.is(arg, 'RegExp')
     };
 
-    // 安全的获取对象属性
-    pocket.getValue = function(obj, args) {
-        var _args = pocket.isArray(args) ? args : args.split('.');
-        var next = obj;
-        for (var i = 0; i < _args.length; i++) {
-            next = next[_args[i]];
-            if (pocket.isUndefined(next)) return void 0;
-            if (pocket.isNull(next) && i !== (_args.length - 1)) return void 0;
-        }
-
-        return next;
-    };
 
 
 
     // add by yanyj 20180507 end
+    // add by yanyj 20180710 start
+    // math方法
+
+
+    pocket.math = {
+        // 两点的斜率
+        pointsSlope: function(startPoint, endPoint) {
+            return (endPoint[1] - startPoint[1]) / (endPoint[0] - startPoint[0])
+        },
+        // 两点的弧度
+        pointsRadian: function(startPoint, endPoint) {
+            return Math.atan2((endPoint[1] - startPoint[1]), (endPoint[0] - startPoint[0]));
+        },
+        // 两点的角度
+        pointsAngle: function(startPoint, endPoint) {
+            return 180 * this.pointsRadian(startPoint, endPoint) / Math.PI;
+        },
+
+        inOneLine: function(linePoints, otherPoints) {
+
+        }
+    };
+
+
+    // add by yanyj 20180710 end
     // add by yanyj 20180508 start
     // object.js
 
@@ -351,7 +364,48 @@
             }
             return result;
         }
-    })()
+    })();
+
+    pocket.equalDeepProperty = function(obj1, obj2, property, splitFlag) {
+        // 非对象的两个参数比较直接返回false
+        if (!pocket.isObject(obj1) || !pocket.isObject(obj2)) {
+            return false;
+        }
+
+        if (obj1 === obj2) {
+            return true;
+        }
+
+        // 访问层级
+        if (pocket.isString(property)) {
+            property = property.split(splitFlag || '.');
+        }
+
+
+        var deepIndex = property.length;
+        for (var i = 0; i < deepIndex; i++) {
+            obj1 = obj1[property[i]];
+            obj2 = obj2[property[i]];
+
+            if ((!pocket.isObject(obj1) || !pocket.isObject(obj2)) && i !== deepIndex - 1) return false;
+        }
+
+
+        return obj1 === obj2;
+    };
+
+    // 安全的获取对象属性(对象)
+    pocket.getValue = function(obj, args) {
+        var _args = pocket.isArray(args) ? args : args.split('.');
+        var next = obj;
+        for (var i = 0; i < _args.length; i++) {
+            next = next[_args[i]];
+            if (pocket.isUndefined(next)) return void 0;
+            if (pocket.isNull(next) && i !== (_args.length - 1)) return void 0;
+        }
+
+        return next;
+    };
 
 
     // add by yanyj 20180508 end
@@ -383,6 +437,10 @@
     pocket.replaceAll = function(str, regStr, replaceStr) {
         var regExp = pocket.isRegExp(regStr) ? regStr : new RegExp(regStr, 'g');
         return str.replace(regExp, replaceStr);
+    };
+
+    pocket.getUUID = function() {
+        return new Date().getTime().toString(16);
     };
 
 

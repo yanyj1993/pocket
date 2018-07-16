@@ -29,18 +29,6 @@ pocket.isDate = function(arg) { return pocket.is(arg, 'Date') };
 // RegExp
 pocket.isRegExp = function(arg) { return pocket.is(arg, 'RegExp') };
 
-// 安全的获取对象属性
-pocket.getValue = function (obj, args) {
-    var _args = pocket.isArray(args) ? args : args.split('.');
-    var next = obj;
-    for (var i = 0; i < _args.length; i++) {
-        next = next[_args[i]];
-        if(pocket.isUndefined(next)) return void 0;
-        if(pocket.isNull(next) && i !== (_args.length -1)) return void 0;
-    }
-
-    return next;
-};
 
 module.exports = pocket;
 
